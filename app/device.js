@@ -15,7 +15,7 @@
   var EXTRA_BRANDS = {'rJeHak5zRg.Spotify': 'spotify', '5b8c3eb16b.BeamCTVDev': 'hbomax', '3KA0pm7a7V.TubiTV': 'tubi'};
   var INTERNAL = ['adplatform.ADPlayer', 'WykOS4t4F0.cmsWebApp', '25emanual3.emanual',
     'ZODRT12q2l.WebAccountExtension', 'ByJlgt0XeD.CastSettingsApp', 'tv6pbVMQFF.PrivacyChoices'];
-  var SELF = 'nClrkHome1.FrameHome';
+  var SELF = 'OnkarHome1.OnkarHome';
   function api() { return window.tizen && window.tizen.application; }
   function unavailable(done) {
     done({ message: 'Open CleanFrame on the TV to use this control.', detail: 'The web preview cannot control the TV.' });
@@ -39,13 +39,8 @@
     launchApp(IDS[brand], done);
   }
   function art(done) {
-    if (!api()) { unavailable(done); return; }
-    var finish = bounded(done);
-    try {
-      var data = [new tizen.ApplicationControlData('mode', ['fullscreen']), new tizen.ApplicationControlData('requester', ['mobile'])];
-      var control = new tizen.ApplicationControl('http://tizen.org/appcontrol/operation/default', null, null, null, data);
-      api().launchAppControl(control, 'org.tizen.art-app', function () { finish(null); }, function (err) { finish(failure(err)); });
-    } catch (err) { finish(failure(err)); }
+    /* No-op: this TV has no org.tizen.art-app (not a Frame). Revert to the native call if porting back to a Frame model. */
+    done();
   }
   function home(done) { launchApp('com.samsung.tv.csfs', done); }
   function settings(done) { launchApp('com.samsung.tv.coba.setting', done); }

@@ -13,7 +13,7 @@ const CATALOG = IDS.map((id, i) => ({ id, name: NAMES[i], show: true, iconPath: 
   { id: EXTRA, name: UNSAFE_NAME, show: true, iconPath: '' },
   { id: SPOTIFY, name: 'Spotify', show: true, iconPath: '' },
   { id: '5b8c3eb16b.BeamCTVDev', name: 'HBO Max', show: true, iconPath: '' },
-  { id: 'nClrkHome1.FrameHome', name: 'CleanFrame', show: true },
+  { id: 'OnkarHome1.OnkarHome', name: 'CleanFrame', show: true },
   { id: 'AbCdEf1234.worker', name: 'Background worker', show: true },
   { id: 'com.samsung.tv.cobalt-yt', name: 'YouTube', show: true }
 ]);
@@ -245,15 +245,12 @@ try {
     await current.evaluate(() => window.dispatchEvent(new Event('focus')));
     await scene('home'); await act('home.app.netflix'); await current.waitForFunction(() => __tv.calls.length === 2);
     check('Primary app keeps verified target', (await current.evaluate(() => __tv.calls.at(-1))).id === IDS[1]);
-    await current.evaluate(() => window.dispatchEvent(new Event('focus')));
-    await act('util.art'); await current.waitForFunction(() => __tv.calls.length === 3);
-    const art = await current.evaluate(() => __tv.calls.at(-1));
-    check('Art Mode uses app-control with fullscreen request', art.method === 'launchAppControl' && art.id === 'org.tizen.art-app' && art.control.data.some(d => d.key === 'mode' && d.value[0] === 'fullscreen'), art);
+    check('Art Mode control is hidden on this TV', await current.locator('[data-action="util.art"]').count() === 0);
     await current.evaluate(() => window.dispatchEvent(new Event('focus'))); await group('samsung'); await act('samsung.home');
-    await current.waitForFunction(() => __tv.calls.length === 4);
+    await current.waitForFunction(() => __tv.calls.length === 3);
     check('Samsung escape keeps CSFS target', (await current.evaluate(() => __tv.calls.at(-1))).id === 'com.samsung.tv.csfs');
     await current.evaluate(() => window.dispatchEvent(new Event('focus'))); await group('samsung'); await act('samsung.settings');
-    await current.waitForFunction(() => __tv.calls.length === 5);
+    await current.waitForFunction(() => __tv.calls.length === 4);
     check('TV settings keeps installed target', (await current.evaluate(() => __tv.calls.at(-1))).id === 'com.samsung.tv.coba.setting');
     await current.evaluate(() => { window.dispatchEvent(new Event('focus')); __tv.launchFailure = true; });
     await scene('home'); await act('home.app.netflix'); await current.waitForFunction(() => ShoreQA.where().view === 'message');
